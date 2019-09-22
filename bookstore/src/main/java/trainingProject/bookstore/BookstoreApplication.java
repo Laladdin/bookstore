@@ -12,6 +12,8 @@ import org.springframework.context.annotation.Bean;
 
 import trainingProject.bookstore.domain.Book;
 import trainingProject.bookstore.domain.BookRepository;
+import trainingProject.bookstore.domain.Category;
+import trainingProject.bookstore.domain.CategoryRepository;
 
 @SpringBootApplication
 public class BookstoreApplication {
@@ -23,11 +25,24 @@ public class BookstoreApplication {
 	}
 	
 	@Bean
-	public CommandLineRunner bookDemo(BookRepository bookRepository) { 
+	public CommandLineRunner bookDemo(BookRepository bookRepository, CategoryRepository categoryRepository) { 
 		return (args) -> {
 			log.info("save a couple of books");
-			bookRepository.save(new Book("Learning Python", "Lutz, Mark & Asher, David", 1999, "1-56592-464-9", 19.90));
-			bookRepository.save(new Book("Oracle - Tietokannan tehokas hallinta", "Hakkarainen, Anssi", 2011, "978-952-220-485", 29.95));	
+			Category categoryHistory = new Category("history");
+			categoryRepository.save(categoryHistory);
+			
+			//Category categoryIT = new Category("IT");
+			//categoryRepository.save(categoryIT);
+			
+			//Category categoryFinnishLaw = new Category("finnishLaw");
+			//categoryRepository.save(categoryFinnishLaw);
+			
+			
+			 categoryRepository.save(new Category("IT"));
+			 categoryRepository.save(new Category("finnishLaw"));
+			
+			bookRepository.save(new Book("Learning Python", "Lutz, Mark & Asher, David", 1999, "1-56592-464-9", 19.90, categoryRepository.findByName("IT").get(0)));
+			bookRepository.save(new Book("Oracle - Tietokannan tehokas hallinta", "Hakkarainen, Anssi", 2011, "978-952-220-485", 29.95, categoryRepository.findByName("IT").get(0)));	
 			
 			log.info("fetch all books");
 			for (Book book : bookRepository.findAll()) {
@@ -38,3 +53,4 @@ public class BookstoreApplication {
 	}
 
 }
+
