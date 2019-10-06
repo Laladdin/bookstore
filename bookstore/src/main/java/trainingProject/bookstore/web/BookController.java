@@ -1,20 +1,21 @@
 package trainingProject.bookstore.web;
 
-import java.util.ArrayList;
+
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import trainingProject.bookstore.domain.Book;
 import trainingProject.bookstore.domain.BookRepository;
-import trainingProject.bookstore.domain.Category;
 import trainingProject.bookstore.domain.CategoryRepository;
 
 
@@ -41,6 +42,31 @@ public class BookController {
 		return "booklist";
 	}
 	
+	// Show all books in Thymeleaf template
+	/*@RequestMapping(value="/booklist")
+	public String bookList(Model model) {
+	model.addAttribute("books", bookRepository.findAll());
+	return "booklist";
+	}
+	*/
+	
+	// RESTful service to get all books
+    @RequestMapping(value="/Apibooks", method = RequestMethod.GET)
+    public @ResponseBody List<Book> bookListRest() {	
+        return (List<Book>) bookRepository.findAll();
+    } 
+    
+ // RESTful service to get book by id
+    @RequestMapping(value="/Apibooks/{id}", method = RequestMethod.GET)
+    public @ResponseBody Optional<Book> findBookRest(@PathVariable("id") Long bookId) {	
+    	return bookRepository.findById(bookId);
+    }       
+    
+ // RESTful service to save new book 
+    @RequestMapping(value="/books", method = RequestMethod.POST)
+    public @ResponseBody Book saveBookRest(@RequestBody Book car) {	
+    	return bookRepository.save(car);
+    }
 	
 	// tyhjän kirjalomakkeen muodostaminen
 	@RequestMapping(value = "/newbook", method = RequestMethod.GET)
@@ -66,7 +92,6 @@ public class BookController {
 	}
 	
 	
-	
 	// kirjan tietojen muokkaus
 	@RequestMapping(value = "/editbook/{id}", method = RequestMethod.GET)
 	public String editBookForm(@PathVariable("id") Long bookId, Model model) {
@@ -74,23 +99,6 @@ public class BookController {
 		model.addAttribute("categories", categoryRepository.findAll());
 		return "editbook";
 	}
-	
-	/* // muokatun kirjan tiedot kirjalistaan
-	 @RequestMapping(value="/editbook/{id}",method=RequestMethod.POST)
-	 public String saveEditedBook(@PathVariable("id") Long bookId, Model model) {
-		 model.addAttribute("book", bookRepository.findById(bookId));
-	     return "redirect:../booklist";
-	}
-	 
-	 
-	  * @RequestMapping(value = "/edit/{id}", method = RequestMethod.GET)
-			public String editBook(@PathVariable("id") Long bookId, Model model) {
-			
-				model.addAttribute("book", bookrepository.findById(bookId));
-				
-				
-			return "EditBook";
-	  */
 
 	
 }
