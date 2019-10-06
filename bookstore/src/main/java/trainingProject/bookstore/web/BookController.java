@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -30,6 +31,12 @@ public class BookController {
 	@Autowired
 	CategoryRepository categoryRepository;
 	
+	
+	// Login page
+    @RequestMapping(value="/login")
+    public String login() {	
+        return "login";
+    }	
 	
 	// kirjojen listaus tietokannasta
 	@RequestMapping(value = "/booklist", method = RequestMethod.GET)
@@ -86,6 +93,7 @@ public class BookController {
 
 	// kirjan poisto
 	@RequestMapping(value = "/deletebook/{id}", method = RequestMethod.GET)
+	@PreAuthorize("hasRole('ADMIN')")
 	public String deleteBook(@PathVariable("id") Long bookId) {
 		bookRepository.deleteById(bookId);
 		return "redirect:../booklist";
@@ -94,6 +102,7 @@ public class BookController {
 	
 	// kirjan tietojen muokkaus
 	@RequestMapping(value = "/editbook/{id}", method = RequestMethod.GET)
+	@PreAuthorize("hasRole('ADMIN')")
 	public String editBookForm(@PathVariable("id") Long bookId, Model model) {
 		model.addAttribute("book", bookRepository.findById(bookId));
 		model.addAttribute("categories", categoryRepository.findAll());
