@@ -14,6 +14,8 @@ import trainingProject.bookstore.domain.Book;
 import trainingProject.bookstore.domain.BookRepository;
 import trainingProject.bookstore.domain.Category;
 import trainingProject.bookstore.domain.CategoryRepository;
+import trainingProject.bookstore.domain.User;
+import trainingProject.bookstore.domain.UserRepository;
 
 @SpringBootApplication
 public class BookstoreApplication {
@@ -25,7 +27,7 @@ public class BookstoreApplication {
 	}
 	
 	@Bean
-	public CommandLineRunner bookDemo(BookRepository bookRepository, CategoryRepository categoryRepository) { 
+	public CommandLineRunner bookDemo(BookRepository bookRepository, CategoryRepository categoryRepository, UserRepository userRepository) { 
 		return (args) -> {
 			log.info("save a couple of books");
 			Category categoryHistory = new Category("history");
@@ -43,6 +45,12 @@ public class BookstoreApplication {
 			
 			bookRepository.save(new Book("Learning Python", "Lutz, Mark & Asher, David", 1999, "1-56592-464-9", 19.90, categoryRepository.findByName("IT").get(0)));
 			bookRepository.save(new Book("Oracle - Tietokannan tehokas hallinta", "Hakkarainen, Anssi", 2011, "978-952-220-485", 29.95, categoryRepository.findByName("IT").get(0)));	
+			
+			// Create users: user/helpposalasana admin/hankalasalasana 
+			User user1 = new User("user", "$2a$10$jdQvkXo532GgZ/QvZO/n7egR.IxXnPS/1g7UNTbfhHDJ4azhb/jOG", "juusojuuseri@gmail.com", "USER");
+			User user2 = new User("admin", "$2a$10$2Tg2vSL1fw57bPAou53aD./YKvZXHzx87QJT2.6Eg66C3FcD8b6oy", "adamadmini@gmail.com", "ADMIN");
+			userRepository.save(user1);
+			userRepository.save(user2);
 			
 			log.info("fetch all books");
 			for (Book book : bookRepository.findAll()) {

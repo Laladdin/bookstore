@@ -93,7 +93,7 @@ public class BookController {
 
 	// kirjan poisto
 	@RequestMapping(value = "/deletebook/{id}", method = RequestMethod.GET)
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasAuthority('ADMIN')")
 	public String deleteBook(@PathVariable("id") Long bookId) {
 		bookRepository.deleteById(bookId);
 		return "redirect:../booklist";
@@ -102,7 +102,7 @@ public class BookController {
 	
 	// kirjan tietojen muokkaus
 	@RequestMapping(value = "/editbook/{id}", method = RequestMethod.GET)
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasAuthority('ADMIN')")
 	public String editBookForm(@PathVariable("id") Long bookId, Model model) {
 		model.addAttribute("book", bookRepository.findById(bookId));
 		model.addAttribute("categories", categoryRepository.findAll());
