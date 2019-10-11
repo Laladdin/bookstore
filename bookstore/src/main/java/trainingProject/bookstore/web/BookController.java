@@ -31,6 +31,11 @@ public class BookController {
 	@Autowired
 	CategoryRepository categoryRepository;
 	
+	// Home page
+	@RequestMapping(value="/")
+	public String home() {
+		return "homepage";
+	}
 	
 	// Login page
     @RequestMapping(value="/login")
