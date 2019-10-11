@@ -47,10 +47,10 @@ public class BookstoreRepositoryTest {
 	 
 	 @Test
 	    public void findByUsernameReturnUser() {
-		List<User> users = userRepository.findByUsername("admin");
-		
-		assertThat(users).hasSize(1);
-		assertThat(users.get(0).getEmail()).isEqualTo("adamadmini@gmail.com");
+		 // salasana = melkovaikeasalasana
+		User user = new User("testaaja", "$2a$10$.mIH0qCToObPIwRvBTebGeodob9W/Hm13k.D.kefYGpK8dfnU1xlm", "terhitestaaja@gmail.com", "USER");
+		userRepository.save(user);
+		assertThat(user.getId()).isNotNull();
 	 }
 
 	 
