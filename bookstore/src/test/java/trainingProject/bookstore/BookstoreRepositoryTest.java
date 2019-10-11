@@ -1,38 +1,64 @@
-package trainingProject.bookstore.web;
+package trainingProject.bookstore;
 
+import static org.assertj.core.api.Assertions.assertThat; 
 
 import java.util.List;
-import java.util.Optional;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.junit4.SpringRunner;
+
 
 import trainingProject.bookstore.domain.Book;
 import trainingProject.bookstore.domain.BookRepository;
 import trainingProject.bookstore.domain.CategoryRepository;
+import trainingProject.bookstore.domain.User;
+import trainingProject.bookstore.domain.UserRepository;
 
+@RunWith(SpringRunner.class)
+@DataJpaTest
+public class BookstoreRepositoryTest {
+	
+	 @Autowired
+	 private BookRepository bookRepository;
+	 
+	 @Autowired
+	 private CategoryRepository categoryRepository;
+	 
+	 @Autowired
+	 private UserRepository userRepository;
+	 
+	 @Test
+	    public void findByTitleReturnBook() {
+	        List<Book> books = bookRepository.findByTitle("Oracle - Tietokannan tehokas hallinta");
+	        
+	        assertThat(books).hasSize(1);
+	        assertThat(books.get(0).getAuthor()).isEqualTo("Hakkarainen, Anssi");
+	    }
+	 
+	 @Test
+	    public void createNewBook() {
+	    	Book book = new Book("Uusi kirja", "Kirjailija", 1999, "1-5903-555-8", 19.90, categoryRepository.findByName("IT").get(0));
+	    	bookRepository.save(book);
+	    	assertThat(book.getId()).isNotNull();
+	    }
+	 
+	 @Test
+	    public void findByUsernameReturnUser() {
+		List<User> users = userRepository.findByUsername("admin");
+		
+		assertThat(users).hasSize(1);
+		assertThat(users.get(0).getEmail()).isEqualTo("adamadmini@gmail.com");
+	 }
 
-
-@Controller
-public class BookController {
-	// Spring-alusta luo sovelluksen käynnistyessä BookRepository-rajapintaa toteuttavan luokan olion 
-	   // ja kytkee olion BookController-luokasta luodun olion attribuuttiolioksi
-	@Autowired
-	BookRepository bookRepository; 
-	
-	@Autowired
-	CategoryRepository categoryRepository;
-	
-	
-	// Login page
+	 
+ }
+	 	
+	 
+	 /*
+	  *  // Login page
     @RequestMapping(value="/login")
     public String login() {	
         return "login";
@@ -50,12 +76,7 @@ public class BookController {
 	}
 	
 	// Show all books in Thymeleaf template
-	/*@RequestMapping(value="/booklist")
-	public String bookList(Model model) {
-	model.addAttribute("books", bookRepository.findAll());
-	return "booklist";
-	}
-	*/
+
 	
 	// RESTful service to get all books
     @RequestMapping(value="/Apibooks", method = RequestMethod.GET)
@@ -71,8 +92,8 @@ public class BookController {
     
  // RESTful service to save new book 
     @RequestMapping(value="/books", method = RequestMethod.POST)
-    public @ResponseBody Book saveBookRest(@RequestBody Book book) {	
-    	return bookRepository.save(book);
+    public @ResponseBody Book saveBookRest(@RequestBody Book car) {	
+    	return bookRepository.save(car);
     }
 	
 	// tyhjän kirjalomakkeen muodostaminen
@@ -108,6 +129,5 @@ public class BookController {
 		model.addAttribute("categories", categoryRepository.findAll());
 		return "editbook";
 	}
+	  */
 
-	
-}
